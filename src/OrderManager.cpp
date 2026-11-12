@@ -53,6 +53,10 @@ Order* OrderManager::findOrder(int orderId) {
     return nullptr;
 }
 
+const std::vector<std::unique_ptr<Order>>& OrderManager::getOrders() const {
+    return orders_;
+}
+
 double OrderManager::getTurnover() const {
     return turnover_;
 }

@@ -1,4 +1,5 @@
 #include "CashbackDiscount.h"
+#include "Console.h"
 #include "CourierDelivery.h"
 #include "DeliveryProxy.h"
 #include "FreeDeliveryDiscount.h"
@@ -148,8 +149,15 @@ void scenario5() {
               << ", customers: " << manager.getCustomerCount() << '\n';
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc > 2 || (argc == 2 && std::string(argv[1]) != "--demo")) {
+        std::cerr << "Usage: order_demo [--demo]\n";
+        return 2;
+    }
     try {
+        if (argc == 1) {
+            return runConsole();
+        }
         registerTypes();
         scenario1();
         scenario2();

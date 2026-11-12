@@ -26,6 +26,7 @@ public:
                        const std::string& region = "Saint Petersburg");
     void updateStatus(int orderId, OrderStatus newStatus);
     Order* findOrder(int orderId);
+    const std::vector<std::unique_ptr<Order>>& getOrders() const;
 
     double getTurnover() const;
     std::size_t getCustomerCount() const;

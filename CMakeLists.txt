@@ -43,11 +43,11 @@ enable_project_warnings(order_tests)
 
 add_test(NAME order_tests COMMAND order_tests)
 
-add_executable(order_demo src/main.cpp)
+add_executable(order_demo src/main.cpp src/Console.cpp)
 target_link_libraries(order_demo PRIVATE order_core)
 enable_project_warnings(order_demo)
 
-add_test(NAME order_demo_smoke COMMAND order_demo)
+add_test(NAME order_demo_smoke COMMAND order_demo --demo)
 set_tests_properties(
     order_demo_smoke
     PROPERTIES PASS_REGULAR_EXPRESSION

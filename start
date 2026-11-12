@@ -1,6 +1,15 @@
 #!/bin/sh
 set -eu
 
+mode=${1:-all}
+case "$mode" in
+    all|test|demo) ;;
+    *)
+        printf 'Usage: %s [test|demo]\n' "$0" >&2
+        exit 2
+        ;;
+esac
+
 project_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 build_dir="$project_dir/build"
 
@@ -13,5 +22,12 @@ cmake --build "$build_dir" --parallel
 printf '\n[3/3] Running tests...\n'
 ctest --test-dir "$build_dir" --output-on-failure
 
-printf '\nStarting demonstration...\n'
-exec "$build_dir/order_demo"
+if [ "$mode" = demo ]; then
+    printf '\nStarting demonstration...\n'
+    exec "$build_dir/order_demo" --demo
+fi
+
+if [ "$mode" = all ]; then
+    printf '\nStarting interactive menu...\n'
+    exec "$build_dir/order_demo"
+fi
