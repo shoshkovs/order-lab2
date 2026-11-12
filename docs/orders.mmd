@@ -1,0 +1,93 @@
+classDiagram
+    class ProductType {
+        -static pool_ : unordered_map
+        -category_ : string
+        -baseWeight_ : double
+        -basePrice_ : double
+        +static getType(category) shared_ptr~ProductType~
+    }
+    class Product {
+        -id_ : int
+        -quantity_ : int
+        -currentPrice_ : double
+        -type_ : shared_ptr~ProductType~
+        +getWeight() double
+        +getTotalPrice() double
+        +changeQuantity(delta)
+    }
+    class IObserver {
+        <<interface>>
+        +onOrderEvent(event)*
+    }
+    class IObservable {
+        -observers_ : vector~IObserver*~
+        +subscribe(observer)
+        +unsubscribe(observer)
+        +notify(event)
+    }
+    class OrderEvent {
+        -orderId_ : int
+        -oldStatus_ : OrderStatus
+        -newStatus_ : OrderStatus
+        -timestamp_ : time_point
+    }
+    class Order {
+        -id_ : int
+        -customer_ : string
+        -items_ : vector~shared_ptr~Product~~
+        -status_ : OrderStatus
+        -delivery_ : shared_ptr~Delivery~
+        -discounts_ : vector~string~
+        +addItem(item)
+        +removeItem(id) bool
+        +getTotalWeight() double
+        +getTotalPrice() double
+        +setStatus(status)
+        +applyDiscount(discount)
+        +setDelivery(delivery)
+    }
+    class OrderManager {
+        -orders_ : vector~unique_ptr~Order~~
+        -customers_ : set~string~
+        -turnover_ : double
+        -maxActiveOrders_ : int
+        +createOrder(customer, items) Order&
+        +updateStatus(id, status)
+        +getTurnover() double
+        +getCustomerCount() size_t
+        +onOrderEvent(event)
+    }
+    class Delivery {
+        <<interface>>
+        +getCost(order) double*
+        +getEstimatedTime() string*
+        +isAvailable(order) bool*
+    }
+    class DeliveryProxy {
+        -realDelivery_ : shared_ptr~Delivery~
+        -regions_ : vector~string~
+        -cache_ : unordered_map
+    }
+    class Discount {
+        <<interface>>
+        +apply(order)*
+    }
+
+    ProductType "1" o-- "*" Product : shared
+    Order *-- "*" Product
+    IObservable <|-- Order
+    IObservable o-- IObserver
+    IObserver <|.. OrderManager
+    OrderManager *-- "*" Order
+    IObservable ..> OrderEvent
+    Order o-- Delivery
+    Delivery <|.. CourierDelivery
+    Delivery <|.. PickupDelivery
+    Delivery <|.. PostDelivery
+    Delivery <|.. DeliveryProxy
+    DeliveryProxy o-- Delivery : realDelivery_
+    Discount <|.. PercentDiscount
+    Discount <|.. CashbackDiscount
+    Discount <|.. FreeDeliveryDiscount
+    Discount <|.. GiftDiscount
+    Order ..> Discount : apply

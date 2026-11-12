@@ -1,0 +1,83 @@
+Scenario 1: create order and apply percent discount
+[ORDER] add item: Book
+[ORDER] add item: Laptop
+[MANAGER] create order: 1 for Anna
+  Before: Order 1 | Anna | pending | items=2 | weight=3 | goods=61600 | total=61600 | bonus=0
+[DISCOUNT] apply: Percent 10%
+  After:  Order 1 | Anna | pending | items=2 | weight=3 | goods=55440 | total=55440 | bonus=0
+Scenario 2: choose delivery through proxy
+[ORDER] add item: Dumbbell
+[MANAGER] create order: 1 for Boris
+  Weight: 12 kg
+[DELIVERY] Post available: too heavy
+  Post rejected: Delivery is not available for this order
+[DELIVERY] Courier available: yes
+[DELIVERY] assign: Courier
+[DELIVERY] Courier get cost: order 1
+[DELIVERY] Courier available: yes
+[DELIVERY] Courier cache: miss
+[DELIVERY] Courier get cost: order 1
+[DELIVERY] Courier available: yes
+[DELIVERY] Courier cache: hit
+  Courier 1-2 days: Order 1 | Boris | pending | items=1 | weight=12 | goods=6000 | Courier 500 | total=6500 | bonus=0
+[DELIVERY] Courier get cost: order 1
+[DELIVERY] Courier available: yes
+[DELIVERY] Courier cache: hit
+  Cost requests: 3, real calculations: 1
+[ORDER] add item: Book
+[MANAGER] create order: 2 for Boris
+[DELIVERY] Courier available: no service in Vladivostok
+  Courier to Vladivostok: no
+Scenario 3: status change notifies manager
+[ORDER] add item: Book
+[MANAGER] create order: 1 for Vera
+[DELIVERY] assign: Pickup
+  Turnover before: 0
+[ORDER] status: pending -> paid
+[MANAGER] order 1: pending -> paid, turnover 2400.000000, active 1
+  Turnover after paid: 2400
+[ORDER] status: paid -> shipped
+[MANAGER] order 1: paid -> shipped, turnover 2400.000000, active 1
+[ORDER] status: shipped -> delivered
+[MANAGER] order 1: shipped -> delivered, turnover 2400.000000, active 0
+  Active orders of Vera: 0
+  Order 1 | Vera | delivered | items=1 | weight=1.5 | goods=2400 | Pickup 0 | total=2400 | bonus=0
+Scenario 4: several discounts on one order
+[ORDER] add item: Book
+[MANAGER] create order: 1 for Gleb
+[DELIVERY] Courier available: yes
+[DELIVERY] assign: Courier
+[DELIVERY] Courier get cost: order 1
+[DELIVERY] Courier available: yes
+[DELIVERY] Courier cache: miss
+[DELIVERY] Courier get cost: order 1
+[DELIVERY] Courier available: yes
+[DELIVERY] Courier cache: hit
+  Before: Order 1 | Gleb | pending | items=1 | weight=2.5 | goods=4000 | Courier 500 | total=4500 | bonus=0
+[DISCOUNT] apply: Percent 10%
+[DISCOUNT] apply: Cashback 5%
+[DISCOUNT] apply: Free delivery
+[ORDER] add item: Mug
+[DISCOUNT] apply: Gift Mug
+  After:  Order 1 | Gleb | pending | items=2 | weight=2.8 | goods=3600 | Courier 0 | total=3600 | bonus=180
+  Applied: [Percent 10%] [Cashback 5%] [Free delivery] [Gift Mug]
+Scenario 5: cancel order and free active limit
+[ORDER] add item: Book
+[MANAGER] create order: 1 for Dina
+[ORDER] add item: Mug
+[MANAGER] create order: 2 for Dina
+[DELIVERY] assign: Pickup
+[ORDER] status: pending -> paid
+[MANAGER] order 1: pending -> paid, turnover 800.000000, active 2
+  Active: 2, turnover: 800
+[MANAGER] create order: limit for Dina
+  Third order rejected: Active order limit reached for Dina
+[ORDER] status: paid -> cancelled
+[MANAGER] order 1: paid -> cancelled, turnover 0.000000, active 1
+  After cancel active: 1, turnover: 0
+[ORDER] add item: Book
+[MANAGER] create order: 3 for Dina
+[ORDER] add item: Mug
+[MANAGER] create order: 4 for Egor
+  Active: 2, customers: 2
+Product types in pool: 4

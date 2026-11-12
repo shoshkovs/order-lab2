@@ -1,0 +1,50 @@
+[PASS] testFlyweightSharesProductTypes
+[ORDER] add item: Book
+[ORDER] add item: Dumbbell
+[ORDER] add item: Book
+[DELIVERY] Courier available: no service in Vladivostok
+[DELIVERY] Courier available: yes
+[DELIVERY] Courier get cost: order 1
+[DELIVERY] Courier available: yes
+[DELIVERY] Courier cache: miss
+[DELIVERY] Courier get cost: order 1
+[DELIVERY] Courier available: yes
+[DELIVERY] Courier cache: hit
+[ORDER] add item: Book
+[DELIVERY] Courier get cost: order 1
+[DELIVERY] Courier available: yes
+[DELIVERY] Courier cache: miss
+[PASS] testDeliveryStrategiesAndProxy
+[ORDER] add item: Book
+[DELIVERY] assign: Courier
+[DISCOUNT] apply: Percent 10%
+[DISCOUNT] apply: Cashback 5%
+[DISCOUNT] apply: Free delivery
+[ORDER] add item: Mug
+[DISCOUNT] apply: Gift Mug
+[PASS] testDiscountStrategies
+[ORDER] add item: Book
+[MANAGER] create order: 1 for Vera
+[ORDER] add item: Book
+[MANAGER] create order: 2 for Vera
+[ORDER] add item: Book
+[MANAGER] create order: 3 for Gleb
+[MANAGER] create order: limit for Vera
+[DELIVERY] assign: Pickup
+[ORDER] status: pending -> paid
+[MANAGER] order 1: pending -> paid, turnover 1600.000000, active 2
+[ORDER] status: pending -> paid
+[MANAGER] order 2: pending -> paid, turnover 2400.000000, active 2
+[ORDER] status: paid -> cancelled
+[MANAGER] order 1: paid -> cancelled, turnover 800.000000, active 1
+[ORDER] add item: Book
+[MANAGER] create order: 4 for Vera
+[PASS] testObserverUpdatesManager
+[ORDER] add item: Book
+[DELIVERY] assign: Post
+[DISCOUNT] apply: Percent 10%
+[DISCOUNT] apply: Free delivery
+[DISCOUNT] apply: Percent 50%
+[ORDER] status: pending -> paid
+[PASS] testOperatorsAndOrderCopy
+5/5 tests passed
